@@ -8,6 +8,7 @@ using System.Collections.Generic;
 public class StartingItems : FortressCraftMod
 {
     private Coroutine serverCoroutine;
+    private bool coroutineBusy;
     private static List<string> savedPlayers;
     private static readonly string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
     private static readonly string playersFilePath = Path.Combine(assemblyFolder, "players.txt");
@@ -70,7 +71,10 @@ public class StartingItems : FortressCraftMod
     {
         if (WorldScript.mbIsServer || NetworkManager.mbHostingServer)
         {
-            serverCoroutine = StartCoroutine(CheckAreas());
+            if (coroutineBusy == false)
+            {
+                serverCoroutine = StartCoroutine(GiveItems());
+            }
         }
     }
 
@@ -123,8 +127,9 @@ public class StartingItems : FortressCraftMod
     }
 
     // Checks player positions relative to protected areas and sets permissions.
-    private IEnumerator CheckAreas()
+    private IEnumerator GiveItems()
     {
+        coroutineBusy = true;
         if (NetworkManager.instance != null)
         {
             if (NetworkManager.instance.mServerThread != null)
@@ -163,6 +168,7 @@ public class StartingItems : FortressCraftMod
                 }
             }
         }
+        coroutineBusy = false;
     }
 
     // Gives starting items to a player.
