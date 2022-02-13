@@ -126,7 +126,7 @@ public class StartingItems : FortressCraftMod
         NetworkManager.instance.QueueChatMessage(chatLine);
     }
 
-    // Checks player positions relative to protected areas and sets permissions.
+    // Gives starting items to players.
     private IEnumerator GiveItems()
     {
         coroutineBusy = true;
